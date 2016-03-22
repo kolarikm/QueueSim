@@ -1,3 +1,6 @@
+#ifndef _QUEUE
+#define _QUEUE
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,11 +12,12 @@ typedef unsigned int		data;
 typedef enum {false, true}	boolean;
 
 struct elem {
-    data            d;
+    data            id;
+    data            a_time;
     struct elem     *next;
 };
 
-typedef stuct elem      elem;
+typedef struct elem      elem;
 
 struct queue {
     int     cnt;        //a count of the elements
@@ -29,3 +33,5 @@ data    dequeue(queue *q);
 data    front(const queue *q);
 boolean empty(const queue *q);
 boolean full(const queue *q);
+
+#endif

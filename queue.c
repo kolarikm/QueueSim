@@ -7,12 +7,13 @@ void initialize(queue *q)
     q -> rear = NULL;
 }
 
-void enqueue(data d, queue *q)
+void enqueue(data id, data a_time, queue *q)
 {
     elem *p;
 
     p = malloc(sizeof(elem));
-    p -> d = d;
+    p -> id = id;
+    p -> a_time = a_time;
     p -> next = NULL;
     
     if (!empty(q))
@@ -48,7 +49,7 @@ data front(const queue *q)
 
 boolean empty(const queue *q)
 {
-    return ((bolean) (q -> cnt == EMPTY));
+    return ((boolean) (q -> cnt == EMPTY));
 }
 
 boolean full(const queue *q)
