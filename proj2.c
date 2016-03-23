@@ -10,6 +10,9 @@
 //Array used for storing input data
 int **in_data;
 
+//Customer queue
+queue customer_queue;
+
 //Forward function declarations
 int new_customers(int r);
 
@@ -21,6 +24,9 @@ struct customer {
 };
 
 typedef struct customer customer;
+
+// //Array used to load new customers
+// customer *cust_array;
 
 double expdist (double mean)
 {
@@ -72,12 +78,36 @@ void read_data()
   fclose(in);
 }
 
+//Returns the teller ready to take a new customer
+int find_teller(int t[], int num)
+{
+  for (int i = 0; i < num; i++)
+  {
+    if (t[i] == -1) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/*
+int check_tellers()
+checks the teller array (which is actually an array of customers numoftellers long)
+when a customer is enqueued set a "time to serve" as an expdist that way when you
+check for completion you can just check that time against when they were served
+time when put in teller array - time to serve == 0, set that array location to -1
+next time find teller loops it will catch the empty space and dequeue another customer
+*/
+
 void simulation (int numOfTellers)
 {
+  initialize(&customer_queue);
+  printf("%d\n", customer_queue.cnt);
+  int tellers[numOfTellers];
   int cust_served, avg_line_len, max_lin_len;
   float avg_wait, max_wait;
-  int sec, min;
-
+  int sec, min, c_id;
+  c_id = 0;
   srand(time(NULL));
 
   //Loop for one day, 480 minutes times 60 seconds
@@ -88,16 +118,24 @@ void simulation (int numOfTellers)
       int new_rand = rand() % 100 + 1;
       int new_cust = new_customers(new_rand);
 
+      //Create new customers based on previous random number
+      for (int x = 0; x < new_cust; x++) {
+        customer c;
+        c.id = ++c_id;
+        c.time_entered = sec;           //Time when entered queue
+        c.time_served = sec;             //NEEDS TO CHANGE SET to time when dequeued
 
-      //Bring in new customers
-      //Random number between 1 and 100, then check its value
-      //against data[3] to find number of new customers
-      //int new_cust = ^
-      //create_new_custs
+        //Every time you enqueue check queue.cnt against current max update if necces
+        enqueue(c.id, sec, &customer_queue);
+        // printf("id in q: %d\n", c.id);
+      }
+
+      //Check if there is an empty space in teller array, if so, that empty space = dequeue(&customer_queue);
 
 
     }
 
+    int rr = find_teller(tellers, numOfTellers);
   }
 
   //Somehow need to simulate 480 separate minutes
@@ -135,6 +173,7 @@ int main ()
   customer c1;
   c1.id = 1;
   printf("Customer: %d\n", c1.id);
+  // cust_array = (customer*)malloc(10000 * sizeof(c1));
 
   simulation(7);
   printf("100: %d\n", new_customers(100));
