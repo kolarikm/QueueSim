@@ -28,7 +28,7 @@ struct queue {
 typedef struct queue    queue;
 
 void    initialize(queue *q);
-void    enqueue(data d, queue *q);
+void    enqueue(data id, data a_time, queue *q);
 data    dequeue(queue *q);
 data    front(const queue *q);
 boolean empty(const queue *q);

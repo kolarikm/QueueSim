@@ -15,7 +15,7 @@ void enqueue(data id, data a_time, queue *q)
     p -> id = id;
     p -> a_time = a_time;
     p -> next = NULL;
-    
+
     if (!empty(q))
     {
         q -> rear -> next = p;
@@ -32,19 +32,19 @@ data dequeue(queue *q)
     data d;
     elem *p;
 
-    d = q -> front -> d;
+    d = q -> front -> id;
     p = q -> front;
 
     q -> front = q -> front -> next;
     q -> cnt--;
-    
+
     free(p);
     return d;
 }
 
 data front(const queue *q)
 {
-    return (q -> front -> d);
+    return (q -> front -> id);
 }
 
 boolean empty(const queue *q)

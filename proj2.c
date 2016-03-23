@@ -7,12 +7,13 @@
 #include <time.h>
 #define AVG_SERVICE 2.0
 
-int n = 0;
+//Array used for storing input data
 int **in_data;
 
 //Forward function declarations
 int new_customers(int r);
 
+//Model a customer coming into the bank
 struct customer {
   int id;
   int time_entered;
@@ -28,15 +29,8 @@ double expdist (double mean)
   return -mean * log(r);
 }
 
-// loop work day 480 * 60 seconds
-
-
 void split_str(char *s, int *r)
 {
-  char * token1;
-  char * token2;
-  //token1 = strtok(s, "\t");
-  //token2 = strtok(NULL, "\n");
   r[0] = atoi(strtok(s, "\t"));
   r[1] = atoi(strtok(NULL, "\n"));
 }
@@ -65,8 +59,6 @@ void read_data()
   char s[20];
   int i = 0;
   in = fopen("proj2.dat", "r");
-  //int l = get_num_lines();
-  //int r[l][3];
   while (fgets(s, 20, in) != NULL)
   {
   split_str(s, in_data[i]);
@@ -109,10 +101,6 @@ void simulation (int numOfTellers)
   }
 
   //Somehow need to simulate 480 separate minutes
-  // !!!  Do this first --> Each minute, calculate random 1-100 number to get number of arriving customers using proj2.dat
-  // DONE!  Read in data
-  // DONE!  Place into 2d array
-  // Write function that takes in a int 1-100 and determines how many customers will be served that minute by looking at number in col2 and then getting and returning col1
   //Use expdist to figure out how long serving that customer takes for each teller
   //One queue with 1-100 new elems getting added every 60 ticks
   //Each teller can handle 60 / that teller's expdist number of customers per tick
