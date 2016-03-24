@@ -1,5 +1,12 @@
+/************************************
+* Queue implementation by Al Kelley
+* and Ira Pohl -- 1998
+* Modified by Michael Kolarik -- 2016
+************************************/
+
 #include "queue.h"
 
+// Instantiate the empty queue
 void initialize(queue *q)
 {
     q -> cnt = 0;
@@ -7,6 +14,7 @@ void initialize(queue *q)
     q -> rear = NULL;
 }
 
+// Add an element to the back of the queue
 void enqueue(data id, data a_time, queue *q)
 {
     elem *p;
@@ -27,6 +35,7 @@ void enqueue(data id, data a_time, queue *q)
     q -> cnt++;
 }
 
+// Dequeue the first element in the queue and return it
 elem dequeue(queue *q)
 {
     data d;
@@ -42,16 +51,19 @@ elem dequeue(queue *q)
     return *p;
 }
 
+// Return front (first) postion in queue
 data front(const queue *q)
 {
     return (q -> front -> id);
 }
 
+// Determine if the queue is empty
 boolean empty(const queue *q)
 {
     return ((boolean) (q -> cnt == EMPTY));
 }
 
+// Determine if the queue is full
 boolean full(const queue *q)
 {
     return ((boolean) (q -> cnt == FULL));
