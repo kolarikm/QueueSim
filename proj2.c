@@ -6,6 +6,7 @@
 #include <string.h>
 #include <time.h>
 #define AVG_SERVICE 2.0
+#define EMPTY 0
 
 //Array used for storing input data
 int **in_data;
@@ -24,6 +25,8 @@ struct customer {
 };
 
 typedef struct customer customer;
+
+customer d;
 
 // //Array used to load new customers
 // customer *cust_array;
@@ -67,23 +70,23 @@ void read_data()
   in = fopen("proj2.dat", "r");
   while (fgets(s, 20, in) != NULL)
   {
-  split_str(s, in_data[i]);
-  if (i == 0)
-  in_data[i][2] = in_data[i][1];
-  else
-  in_data[i][2] = (in_data[i-1][2] + in_data[i][1]);
-  printf("%d   %d   %d\n", in_data[i][0], in_data[i][1], in_data[i][2]);
-  i++;
+    split_str(s, in_data[i]);
+    if (i == 0)
+      in_data[i][2] = in_data[i][1];
+      else
+        in_data[i][2] = (in_data[i-1][2] + in_data[i][1]);
+    printf("%d   %d   %d\n", in_data[i][0], in_data[i][1], in_data[i][2]);
+    i++;
   }
   fclose(in);
 }
 
 //Returns the teller ready to take a new customer
-int find_teller(int t[], int num)
+int find_teller(customer t[], int num)
 {
   for (int i = 0; i < num; i++)
   {
-    if (t[i] == -1) {
+    if (t[i].id == 0) {
       return i;
     }
   }
@@ -99,43 +102,91 @@ time when put in teller array - time to serve == 0, set that array location to -
 next time find teller loops it will catch the empty space and dequeue another customer
 */
 
+int check_tellers(customer tellers[], int num)
+{
+  for (int i = 0; i < num; i++)
+  {
+    int r_time = (tellers[i].time_entered - tellers[i].time_served);
+    if (r_time == 0)
+    {
+      tellers[i] = d;
+      return i;
+    }
+    else
+    {
+      tellers[i].time_served--;
+    }
+  }
+  return 0;
+}
+
 void simulation (int numOfTellers)
 {
   initialize(&customer_queue);
+
+  // Array for new customers coming in this minute
+  customer tellers[numOfTellers];
+
+  // Create default customer
+  d.id = 0;
+
   printf("%d\n", customer_queue.cnt);
-  int tellers[numOfTellers];
-  int cust_served, avg_line_len, max_lin_len;
-  float avg_wait, max_wait;
-  int sec, min, c_id;
-  c_id = 0;
+  int cust_served = 0;
+  int avg_line_len = 0;
+  int max_lin_len = 0;
+  float avg_wait = 0;
+  float max_wait = 0;
+  int sec, min;
+  int c_id = 1;
   srand(time(NULL));
 
   //Loop for one day, 480 minutes times 60 seconds
   for (sec = 0; sec < (480 * 60); sec++) {
 
     if (sec % 60 == 0) {
+
       //Determine how many new customers will enter the queue
       int new_rand = rand() % 100 + 1;
       int new_cust = new_customers(new_rand);
 
-      //Create new customers based on previous random number
+      //Generate new customers based on previous random number and place in
+      //the teller array
       for (int x = 0; x < new_cust; x++) {
         customer c;
         c.id = ++c_id;
         c.time_entered = sec;           //Time when entered queue
         c.time_served = sec;             //NEEDS TO CHANGE SET to time when dequeued
 
+
         //Every time you enqueue check queue.cnt against current max update if necces
         enqueue(c.id, sec, &customer_queue);
-        // printf("id in q: %d\n", c.id);
+        max_lin_len = calc_max_length(&customer_queue, max_lin_len);
+
+        //printf("Teller & id %d\n", tellers[x].id);
+
+        //printf("id in q: %d\n", c.id);
       }
 
-      //Check if there is an empty space in teller array, if so, that empty space = dequeue(&customer_queue);
 
+
+      //check_tellers(  :-)  )
+      //Check if there is an empty space in teller array, if so, that empty space = dequeue(&customer_queue);
 
     }
 
-    int rr = find_teller(tellers, numOfTellers);
+    // If one of the tellers is open place dequeue a element, create a customer
+    // from that dequeued element for time management
+    int open = find_teller(tellers, numOfTellers);
+    if (open > -1)
+    {
+      customer c;
+      elem e;
+      e = dequeue(&customer_queue);
+      c.id = e.id;
+      c.time_entered = e.a_time;
+      c.time_served = sec;
+      tellers[open] = c;
+    }
   }
 
   //Somehow need to simulate 480 separate minutes

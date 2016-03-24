@@ -27,7 +27,7 @@ void enqueue(data id, data a_time, queue *q)
     q -> cnt++;
 }
 
-data dequeue(queue *q)
+elem dequeue(queue *q)
 {
     data d;
     elem *p;
@@ -38,8 +38,8 @@ data dequeue(queue *q)
     q -> front = q -> front -> next;
     q -> cnt--;
 
-    free(p);
-    return d;
+    //free(p);
+    return *p;
 }
 
 data front(const queue *q)
